@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.nav-link {
+    @apply block px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition;
+}
+
+.card {
+    @apply bg-white rounded-2xl shadow-sm border border-slate-200 p-6;
+}
+
+.card-title {
+    @apply text-sm font-medium text-slate-500;
+}
+
+.card-number {
+    @apply text-4xl font-bold text-slate-800 mt-2;
+}
+
+.btn-primary {
+    @apply inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition;
+}
+
+.btn-success {
+    @apply inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl transition;
+}
+
+.btn-danger {
+    @apply inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition;
+}
+
+.table-style {
+    @apply w-full bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200;
+}
+
+.table-style th {
+    @apply bg-slate-900 text-white text-left px-4 py-3;
+}
+
+.table-style td {
+    @apply px-4 py-3 border-b border-slate-100 text-slate-700;
+}
+
+.badge-green {
+    @apply bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.badge-red {
+    @apply bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.badge-yellow {
+    @apply bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold;
+}
