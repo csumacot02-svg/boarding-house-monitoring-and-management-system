@@ -31,7 +31,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Install Node dependencies and build Vite assets
 RUN npm install
 RUN npm run build
-RUN php artisan optimize:clear
+RUN php artisan config:clear || true
+RUN php artisan route:clear || true
+RUN php artisan view:clear || true
 # Laravel permissions
 RUN mkdir -p storage/framework/views \
     storage/framework/cache \
