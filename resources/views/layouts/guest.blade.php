@@ -7,7 +7,8 @@
 
     <title>Boarding House Management System</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('build/assets/app-Dhjs82.css') }}">
+    <script type="module" src="{{ asset('build/assets/app-Ksl29.js') }}"></script>
 </head>
 
 <body class="font-sans antialiased bg-slate-950">
