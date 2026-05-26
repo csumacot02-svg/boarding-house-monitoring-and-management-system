@@ -50,4 +50,60 @@
             @endforelse
         </div>
     </div>
+
+    <div class="card mt-6">
+        <h3 class="text-xl font-bold mb-4">Tenant List</h3>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-slate-100 text-left">
+                        <th class="p-3">Name</th>
+                        <th class="p-3">Email</th>
+                        <th class="p-3">CP Number</th>
+                        <th class="p-3">Message</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse($tenantList as $tenant)
+                        <tr class="border-b">
+                            <td class="p-3 font-semibold">{{ $tenant->name }}</td>
+                            <td class="p-3">{{ $tenant->email }}</td>
+                            <td class="p-3">{{ $tenant->cp_number ?? 'N/A' }}</td>
+                            <td class="p-3">
+                                <form action="{{ route('announcements.store') }}" method="POST" class="space-y-2">
+                                    @csrf
+
+                                    <input type="hidden" name="tenant_id" value="{{ $tenant->id }}">
+
+                                    <input type="text" name="title"
+                                           value="Private Message from Admin"
+                                           class="w-full border rounded-lg px-3 py-2"
+                                           required>
+
+                                    <textarea name="message"
+                                              rows="2"
+                                              class="w-full border rounded-lg px-3 py-2"
+                                              placeholder="Write message..."
+                                              required></textarea>
+
+                                    <button type="submit"
+                                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl">
+                                        Send Message
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="p-5 text-center text-slate-500">
+                                No tenants found.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </x-app-layout>

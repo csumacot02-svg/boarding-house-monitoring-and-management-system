@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Controllers/AdminController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Room;
@@ -16,10 +14,11 @@ class AdminController extends Controller
     {
         return view('admin.dashboard', [
             'tenants' => User::where('role', 'tenant')->count(),
+            'tenantList' => User::where('role', 'tenant')->orderBy('name')->get(),
             'rooms' => Room::count(),
             'unpaid' => Billing::where('status', 'Unpaid')->count(),
             'maintenance' => MaintenanceRequest::where('status', 'Pending')->count(),
-            'announcements' => Announcement::latest()->take(5)->get(),
+            'announcements' => Announcement::with('tenant')->latest()->take(5)->get(),
         ]);
     }
 }
