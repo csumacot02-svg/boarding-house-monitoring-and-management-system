@@ -1,34 +1,60 @@
-FROM php:8.4-apache
-
-RUN apt-get update && apt-get install -y \
-    git unzip zip curl nodejs npm \
-    libpng-dev libzip-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql zip gd
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+FROM php:8.4-fpm
 
 WORKDIR /var/www/html
 
+# Install system dependencies + Node.js + npm
+RUN apt-get update && apt-get install -y \
+    nginx \
+    git \
+    unzip \
+    zip \
+    curl \
+    nodejs \
+    npm \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy project files
 COPY . .
 
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+# Install Node dependencies and build Vite assets
 RUN npm install
 RUN npm run build
 
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+# Laravel permissions
+RUN mkdir -p storage/framework/views \
+    storage/framework/cache \
+    storage/framework/sessions \
+    bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 777 storage bootstrap/cache
 
-RUN a2enmod rewrite
+# Nginx config
+RUN echo 'server { \
+    listen 10000; \
+    root /var/www/html/public; \
+    index index.php index.html; \
+    location / { \
+        try_files $uri $uri/ /index.php?$query_string; \
+    } \
+    location ~ \.php$ { \
+        include fastcgi_params; \
+        fastcgi_pass 127.0.0.1:9000; \
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \
+    } \
+}' > /etc/nginx/sites-available/default
 
-COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
+EXPOSE 10000
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-EXPOSE 80
-
-CMD php artisan config:clear && \
-    php artisan route:clear && \
-    php artisan view:clear && \
-    php artisan migrate --force && \
-    apache2-foreground
+CMD php-fpm -D && nginx -g "daemon off;"
